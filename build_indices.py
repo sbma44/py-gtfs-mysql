@@ -22,8 +22,11 @@ def convert_time_string_to_seconds(time_string):
     return (int(parts[0])*3600) + (int(parts[1])*60) + int(parts[2])
 
 
-def calendar(cursor):
+def calendar(connection):
     """ Creates numeric keys for date fields in the calendar table """
+    cursor = connection.cursor()
+    insert_cursor = connection.cursor()    
+    
     cursor.execute("SELECT service_id, start_date, end_date FROM calendar;")
     row = cursor.fetchone()
     while row is not None:
@@ -31,24 +34,36 @@ def calendar(cursor):
         start_date = row[1]
         end_date = row[2]
         sql = "UPDATE calendar SET start_date_timestamp=%d, end_date_timestamp=%d WHERE service_id=%d AND start_date='%s' AND end_date='%s'" % (convert_date_string_to_timestamp(start_date), convert_date_string_to_timestamp(end_date), service_id, start_date, end_date)
-        cursor.execute(sql)
+        insert_cursor.execute(sql)
         row = cursor.fetchone()
+        
+    cursor.close()
+    insert_cursor.close()
     
     
-def calendar_dates(cursor):
+def calendar_dates(connection):
     """ Creates numeric keys for date fields in the calendar_dates table """    
+    cursor = connection.cursor()
+    insert_cursor = connection.cursor()
+
     cursor.execute("SELECT service_id, date FROM calendar_dates;")
     row = cursor.fetchone()
     while row is not None:
         service_id = int(row[0])
         date = row[1]
         sql = "UPDATE calendar_dates SET date_timestamp=%d WHERE service_id=%d AND date='%s'" % (convert_date_string_to_timestamp(date), service_id, date)
-        cursor.execute(sql)
+        insert_cursor.execute(sql)
         row = cursor.fetchone()
+        
+    cursor.close()
+    insert_cursor.close()
 
 
-def stop_times(cursor):
+def stop_times(connection):
     """ Creates numeric keys for date fields in the stop_times table """    
+    cursor = connection.cursor()
+    insert_cursor = connection.cursor()
+
     cursor.execute("SELECT trip_id, arrival_time, departure_time, stop_id FROM stop_times;")
     row = cursor.fetchone()
     while row is not None:
@@ -57,25 +72,26 @@ def stop_times(cursor):
         departure_time = row[2]
         stop_id = int(row[3])
         sql = "UPDATE stop_times SET arrival_time_seconds=%d, departure_time_seconds=%d WHERE trip_id=%d AND stop_id=%d AND arrival_time='%s' AND departure_time='%s'" % (convert_time_string_to_seconds(arrival_time), convert_time_string_to_seconds(departure_time), trip_id, stop_id, arrival_time, departure_time)
-        cursor.execute(sql)
+        insert_cursor.execute(sql)
         row = cursor.fetchone()
+        
+    cursor.close()
+    insert_cursor.close()
 
 
 def main():
     conn = MySQLdb.connect (host=settings.MYSQL_HOST, user=settings.MYSQL_USER, passwd=settings.MYSQL_PASSWORD, db=settings.MYSQL_DATABASE)
-    cursor = conn.cursor()
     
     print 'processing calendar'
-    calendar(cursor)
+    calendar(conn)
 
     print 'processing calendar_dates'
-    calendar_dates(cursor)
+    calendar_dates(conn)
     
     print 'processing stop_times'
-    stop_times(cursor)
+    stop_times(conn)
     
-    cursor.close ()
-    conn.close ()
+    conn.close()
 
     print 'done'
     
