@@ -1,0 +1,30 @@
+GTFS MySQL IMPORT SCRIPT
+Author: Tom Lee (thomas.j.lee@gmail.com)
+
+This is a simple set of scripts that will import a GTFS dataset into
+a lightweight MySQL database.  The work is based on Washington, DC's
+WMATA GTFS dataset, and has not been thoroughly checked for completeness
+against the GTFS spec -- some optional fields or tables may not 
+currently be supported (but should be trivial to add).
+
+In addition to the GTFS fields, a number of columns have been created
+to assist in the conversion of GTFS's string-based date/time 
+representations to more useful Unix timestamp-style second counts.
+
+DEAD-SIMPLE USAGE:
+
+1. Create a database, e.g. CREATE DATABASE gtfs
+
+2. Run table creation scripts against the database:
+
+	cat sql/*.sql | mysql -p -u USERNAME -h HOST -D gtfs
+	
+3. Run the import script:
+
+	python load_gtfs.py
+	
+4. Run the time index creation script:
+
+	python build_indices.py
+	
+5. Build something neat
