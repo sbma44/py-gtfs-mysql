@@ -35,6 +35,7 @@ def main():
                     
             insert_sql = "INSERT INTO %s (%s) VALUES (%s);" % (table, ','.join(columns), ','.join(insert_row))        
             cursor.execute(insert_sql)
+
     cursor.close ()
     conn.close ()
 
