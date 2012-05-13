@@ -19,12 +19,16 @@ DEAD-SIMPLE USAGE:
 
 	cat sql/*.sql | mysql -p -u USERNAME -h HOST -D gtfs
 	
-3. Run the import script:
+3. Edit settings.py with your mysql details.
+
+4. Put your GTFS files into the gtfs/ folder
+
+5. Run the import script:
 
 	python load_gtfs.py
 	
-4. Run the time index creation script:
+6. Run the time index creation script:
 
 	python build_indices.py
 	
-5. Build something neat
+7. Build something neat
