@@ -9,7 +9,7 @@ CREATE TABLE `stop_times` (
 	stop_headsign VARCHAR(50),
 	pickup_type INT(2),
 	drop_off_type INT(2),
-	shape_dist_traveled VARCHAR(50)
+	shape_dist_traveled VARCHAR(50),
 	KEY `trip_id` (trip_id),
 	KEY `arrival_time_seconds` (arrival_time_seconds),
 	KEY `departure_time_seconds` (departure_time_seconds),
